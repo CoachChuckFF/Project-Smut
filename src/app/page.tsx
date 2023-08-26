@@ -30,13 +30,16 @@ export default function Home() {
     }
   }, [nostr]);
 
-  const onLogin = () => { alert('Please use alby') };
+  const onLogin = () => {
+    alert("Please use alby");
+  };
   const onProfile = () => {};
 
   const onAuthor = (authorID: string) => {};
   const onTitle = (storyID: string) => {};
   const onTag = (tag: string) => {};
   const onStory = (storyID: string) => {};
+  const onCreateStory = () => {};
 
   return (
     <main
@@ -109,10 +112,28 @@ export default function Home() {
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {story.story}
               </ReactMarkdown>
+              <div className="flex justify-end mt-4 items-center space-x-3">
+                {/* Word count */}
+                <span>{story.story.split(" ").length} words</span>
+                {/* Zaps */}
+                <span>
+                  <strong>{5000}</strong> ⚡︎
+                </span>
+                {/* Zaps to buy */}
+                <span>{5000}⚡︎🛍️</span>
+              </div>
             </div>
           </div>
         ))}
       </div>
+      {/* Floating Action Button */}
+      <button
+        onClick={onCreateStory}
+        className="fixed bottom-10 right-10 bg-stone-500 hover:bg-stone-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center"
+        aria-label="Create New Post"
+      >
+        +
+      </button>
     </main>
   );
 }
