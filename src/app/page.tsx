@@ -32,7 +32,7 @@ export default function Home() {
               </div>
             </div>
             <div onClick={() => {onStory(story.storyID)}} className='mt-4 cursor-pointer'>
-              <ReactMarkdown children={story.story} remarkPlugins={[remarkGfm]} />
+              <ReactMarkdown remarkPlugins={[remarkGfm]} >{story.story}</ReactMarkdown>
             </div>
           </div>
         ))}
