@@ -95,13 +95,11 @@ export async function postStory(
             kinds: [0],
             authors: [pubkey]
         })
+        await pool.close(relays);
 
         if(!profile) throw new Error('No Profile Found')
 
         await relay.publish(profile);
-
-        await pool.close(relays);
-
 
         let event = {
             kind: STORY_KIND,
