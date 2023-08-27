@@ -225,8 +225,7 @@ export async function getInvoiceFromProfile(profile: NostrProfile): Promise<any>
 
             console.log(data)
 
-            
-
+    
             return await getInvoiceFromLud06(data, 5000)
 
         } catch (error) {

@@ -73,26 +73,26 @@ export default function Home() {
   const renderProfile = () => {
     return null;
 
-    if (profile) {
-      return (
-        <div className="w-12 h-12 overflow-hidden rounded-full">
-          {" "}
-          {/* This is the square container */}
-          <img
-            src={profile.picture}
-            alt="User's Profile Picture"
-            className="w-full h-full object-cover"
-            onClick={onProfile}
-          />
-        </div>
-      );
-    }
+    // if (profile) {
+    //   return (
+    //     <div className="w-12 h-12 overflow-hidden rounded-full">
+    //       {" "}
+    //       {/* This is the square container */}
+    //       <img
+    //         src={profile.picture}
+    //         alt="User's Profile Picture"
+    //         className="w-full h-full object-cover"
+    //         onClick={onProfile}
+    //       />
+    //     </div>
+    //   );
+    // }
 
-    return (
-      <button onClick={onLogin} className="text-white px-4 py-2 rounded">
-        Sign In
-      </button>
-    );
+    // return (
+    //   <button onClick={onLogin} className="text-white px-4 py-2 rounded">
+    //     Sign In
+    //   </button>
+    // );
   };
 
   // ----------- HTML ------------------
