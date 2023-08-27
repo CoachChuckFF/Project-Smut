@@ -86,9 +86,9 @@ export default function ReadPageContent(props: ReadPageContentProps) {
         </button>
       </nav>
 
-      <div className="flex flex-col gap-8 max-w-5xl w-full overflow-y-auto space-y-8">
+      <div className="flex flex-col gap-8 max-w-5xl w-full overflow-y-auto space-y-8 mb-60">
         <div className="rounded-lg">
-          <div className="flex items-start mb-4">
+          <div className="flex items-start">
             <img
               src={
                 story.authorProfile
@@ -126,7 +126,7 @@ export default function ReadPageContent(props: ReadPageContentProps) {
       {paymentQR ? (
         <button
           onClick={onZap}
-          className="fixed bottom-10 right-10 bg-stone-500 hover:bg-stone-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center"
+          className="fixed bottom-10 right-10 bg-stone-700 hover:bg-stone-800 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center"
           aria-label="Zap Post"
         >
           ⚡︎
