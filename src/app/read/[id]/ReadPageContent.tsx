@@ -7,6 +7,7 @@ import {
 import { NostrProfile } from "@/components/models/nostrProfile";
 import {
   DEFAULT_PREFERENCES_DARK,
+  DEFAULT_PREFERENCES_LIGHT,
   ReaderPreferences,
 } from "@/components/models/reader";
 import { Story } from "@/components/models/story";
@@ -35,7 +36,11 @@ export default function ReadPageContent(props: ReadPageContentProps) {
   const router = useRouter();
 
   // ------------ EFFECTS -----------
-
+  useEffect(() => {
+    const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setReaderPreferences(isDarkMode ? DEFAULT_PREFERENCES_DARK : DEFAULT_PREFERENCES_LIGHT);
+  }, []);
+  
   useEffect(() => {
     requestProvider()
       .then(setWebln)
