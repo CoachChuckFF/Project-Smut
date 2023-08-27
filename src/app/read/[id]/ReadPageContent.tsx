@@ -133,6 +133,14 @@ export default function ReadPageContent(props: ReadPageContentProps) {
         </button>
       ) : null}
 
+        <button
+          onClick={onBack}
+          className="fixed bottom-10 right-10 bg-stone-700 hover:bg-stone-800 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center"
+          aria-label="Back"
+        >
+          ←
+        </button>
+
       <Modal isOpen={showModal}>
         <div className="flex flex-col gap-4 items-center justify-center">
           <p className="font-semibold mx-auto flex-wrap w-72 text-center">
