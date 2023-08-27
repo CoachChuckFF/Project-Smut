@@ -106,7 +106,7 @@ export default function Home() {
       style={readerPreferences}
     >
       <nav className="flex justify-between w-full mb-14 p-3 h-[10vh]">
-        <p className="text-2xl font-bold">Erotica Stories</p>
+        <p className="text-2xl font-bold">Project Smut</p>
         {renderProfile()}
       </nav>
       <div className="flex flex-col gap-8 max-w-5xl w-full overflow-y-auto space-y-8">
