@@ -21,16 +21,16 @@ export default function Home() {
   const [stories, setStories] = useState<Story[]>([]);
   const [nostr, setNostr] = useState<any>(null);
   const [profile, setProfile] = useState<NostrProfile | null>(null);
-
-  const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-  const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(
-    isDarkMode ? DEFAULT_PREFERENCES_DARK : DEFAULT_PREFERENCES_LIGHT
-  );
+  const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(DEFAULT_PREFERENCES_DARK);
 
   const router = useRouter();
 
   // ----------- EFFECTS ------------------
+  useEffect(() => {
+    const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setReaderPreferences(isDarkMode ? DEFAULT_PREFERENCES_DARK : DEFAULT_PREFERENCES_LIGHT);
+  }, []);
+
   useEffect(() => {
     if ((window as any).nostr) {
       setNostr((window as any).nostr);

@@ -18,7 +18,7 @@ export interface ReaderPreferences {
 
 export const DEFAULT_PREFERENCES_LIGHT: ReaderPreferences = {
     fontFamily: 'Georgia, serif', // A common sans-serif font
-    fontSize: '1rem', // Standard size
+    fontSize: '1.5rem', // Standard size
     backgroundColor: '#FFFFFF', // White
     textColor: '#000000', // Black
     lineSpacing: '1.5rem', // A bit more spacing for readability
@@ -36,7 +36,7 @@ export const DEFAULT_PREFERENCES_LIGHT: ReaderPreferences = {
 
 export const DEFAULT_PREFERENCES_DARK: ReaderPreferences = {
     fontFamily: 'Georgia, serif', // Consistent with the light theme
-    fontSize: '1rem', // Standard size
+    fontSize: '1.5rem', // Standard size
     backgroundColor: '#1a1a1a', // A common dark gray, easier on the eyes than pure black
     textColor: '#EAEAEA', // A light gray, contrasts well with the dark background
     lineSpacing: '1.5rem', // Consistent with light theme
