@@ -1,23 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TEST_STORIES } from "./models/story"; // Adjust the import path to where you defined TEST_STORIES
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { DEFAULT_PREFERENCES_DARK, ReaderPreferences } from "./models/reader";
-import { NostrProfile, getNostrProfile } from "./controllers/nostr";
+import { NostrProfile, getNostrProfile, getStories } from "../components/controllers/nostr";
+import { DEFAULT_PREFERENCES_DARK, ReaderPreferences } from "@/components/models/reader";
+import { Story, TEST_STORIES } from "@/components/models/story";
+import { useRouter } from "next/navigation";
+import MDEditor from "@uiw/react-md-editor";
 
 export default function Home() {
+
+  // ----------- STATE ------------------
+  const [stories, setStories] = useState<Story[]>([])
   const [nostr, setNostr] = useState<any>(null);
   const [profile, setProfile] = useState<NostrProfile | null>(null);
   const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(
     DEFAULT_PREFERENCES_DARK
   );
 
+  const router = useRouter();
+
+  // ----------- EFFECTS ------------------
   useEffect(() => {
     if ((window as any).nostr) {
       setNostr((window as any).nostr);
     }
+
+    getStories().then(setStories)
   }, []);
 
   useEffect(() => {
@@ -27,8 +35,12 @@ export default function Home() {
         .catch(() => {
           setProfile(null);
         });
+      console.log("Hi");
+      getStories();
     }
   }, [nostr]);
+
+  // ----------- FUNCTIONS ------------------
 
   const onLogin = () => {
     alert("Please use alby");
@@ -36,11 +48,15 @@ export default function Home() {
   const onProfile = () => {};
 
   const onAuthor = (authorID: string) => {};
-  const onTitle = (storyID: string) => {};
+  const onTitle = (storyID: string) => {router.push(`/read/${storyID}`);};
   const onTag = (tag: string) => {};
-  const onStory = (storyID: string) => {};
-  const onCreateStory = () => {};
+  const onStory = (storyID: string) => {router.push(`/read/${storyID}`);};
+  const onCreateStory = () => {
+    router.push("/write");
+  };
 
+
+  // ----------- HTML ------------------
   return (
     <main
       className="flex flex-col items-center justify-between p-3 md:pr-24 md:pl-24"
@@ -66,7 +82,7 @@ export default function Home() {
         )}
       </nav>
       <div className="flex flex-col gap-8 max-w-5xl w-full overflow-y-auto space-y-8">
-        {TEST_STORIES.map((story, idx) => (
+        {stories.map((story, idx) => (
           <div key={idx} className="rounded-lg">
             <div className="flex items-start mb-4">
               <img
@@ -109,9 +125,10 @@ export default function Home() {
               }}
               className="mt-4 cursor-pointer"
             >
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <MDEditor.Markdown source={story.summary} style={{ whiteSpace: 'pre-wrap', backgroundColor: 'rgba(0, 0, 0, 0.0)' }} />
+              {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {story.story}
-              </ReactMarkdown>
+              </ReactMarkdown> */}
               <div className="flex justify-end mt-4 items-center space-x-3">
                 {/* Word count */}
                 <span>{story.story.split(" ").length} words</span>
