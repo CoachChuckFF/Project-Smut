@@ -225,40 +225,50 @@ export async function getInvoiceFromProfile(profile: NostrProfile): Promise<any>
 
             console.log(data)
 
-            return data;
+            return await getInvoiceFromLud06(data, 5000)
+
         } catch (error) {
             console.error(`Error fetching invoice from profile: ${error}`);
             throw error;  // Or handle the error as needed
         }
     } else if (profile.lud06) {
-        // TODO: Handle the logic for lud06 if required
+        // Step 1: Fetch the initial data using the provided lnurl
+        const response = await fetch(profile.lud06);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch from ${profile.lud06}. Status: ${response.statusText}`);
+        }
+        const data = await response.json();
+
+        if (data.status === "ERROR") {
+            throw new Error(data.reason);
+        }
+
+        if (data.tag !== "payRequest") {
+            throw new Error("Invalid LNURL type.");
+        }
+
+        return await getInvoiceFromLud06(data, 5000)
     }
 }
 
-export async function getInvoiceFromLud06(lnurl: string): Promise<string> {
-    // Step 1: Fetch the initial data using the provided lnurl
-    const response = await fetch(lnurl);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch from ${lnurl}. Status: ${response.statusText}`);
-    }
-    const data = await response.json();
+interface LnServiceResponse {
+    callback: string; // The URL from LN SERVICE which will accept the pay request parameters
+    maxSendable: number; // Max millisatoshi amount LN SERVICE is willing to receive
+    minSendable: number; // Min millisatoshi amount LN SERVICE is willing to receive
+    metadata: string; // Metadata json presented as a raw string
+    tag: "payRequest"; // Type of LNURL
+}
 
-    if (data.status === "ERROR") {
-        throw new Error(data.reason);
-    }
-
-    if (data.tag !== "payRequest") {
-        throw new Error("Invalid LNURL type.");
-    }
+export async function getInvoiceFromLud06(response: LnServiceResponse, chosenAmount: number): Promise<string> {
 
     // Extract required properties
-    const { callback, maxSendable, minSendable, metadata } = data;
+    const { callback, maxSendable, minSendable, metadata } = response;
 
     // Step 2: Display the payment dialog (a simplified example)
-    const chosenAmount = prompt(`Choose an amount between ${minSendable} and ${maxSendable} millisatoshi:`);
-    if (!chosenAmount || parseInt(chosenAmount) < minSendable || parseInt(chosenAmount) > maxSendable) {
-        throw new Error("Invalid chosen amount.");
-    }
+    // const chosenAmount = prompt(`Choose an amount between ${minSendable} and ${maxSendable} millisatoshi:`);
+    // if (!chosenAmount || parseInt(chosenAmount) < minSendable || parseInt(chosenAmount) > maxSendable) {
+    //     throw new Error("Invalid chosen amount.");
+    // }
 
     // Step 3: Fetch the actual Lightning invoice
     const invoiceResponse = await fetch(`${callback}?amount=${chosenAmount}`);
@@ -271,17 +281,19 @@ export async function getInvoiceFromLud06(lnurl: string): Promise<string> {
         throw new Error(invoiceData.reason);
     }
 
-    // Step 4: Verify metadata hash (simplified example, you should use a proper library for this)
-    const computedHash = sha256(Buffer.from(metadata, "utf8").toString()); // Use an appropriate sha256 function/library here
-    const invoiceHash = invoiceData.pr.h; // Assume 'pr' contains an 'h' property that represents the hash
-    if (computedHash !== invoiceHash) {
-        throw new Error("Metadata hash mismatch.");
-    }
+    console.log(invoiceData);
+
+    // // Step 4: Verify metadata hash (simplified example, you should use a proper library for this)
+    // const computedHash = sha256(Buffer.from(metadata, "utf8").toString()); // Use an appropriate sha256 function/library here
+    // const invoiceHash = invoiceData.pr.h; // Assume 'pr' contains an 'h' property that represents the hash
+    // if (computedHash !== invoiceHash) {
+    //     throw new Error("Metadata hash mismatch.");
+    // }
 
     // Verify the amount
-    if (parseInt(chosenAmount) !== invoiceData.pr.amount) { // Assume 'pr' contains an 'amount' property
-        throw new Error("Invoice amount mismatch.");
-    }
+    // if (chosenAmount !== invoiceData.pr.amount) { // Assume 'pr' contains an 'amount' property
+    //     throw new Error("Invoice amount mismatch.");
+    // }
 
     // Step 5: Pay the invoice (depends on your Lightning implementation)
     // For this demo, just returning the invoice to the caller
