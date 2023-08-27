@@ -35,8 +35,6 @@ export default function Home() {
         .catch(() => {
           setProfile(null);
         });
-      console.log("Hi");
-      getStories();
     }
   }, [nostr]);
 
@@ -104,6 +102,7 @@ export default function Home() {
                 >
                   {story.title}
                 </h2>
+                <p>By: {story.authorID}</p>
                 <ul className="flex space-x-2 mt-1">
                   {story.tags.map((tag, tagIdx) => (
                     <li
@@ -125,19 +124,19 @@ export default function Home() {
               }}
               className="mt-4 cursor-pointer"
             >
-              <MDEditor.Markdown source={story.summary} style={{ whiteSpace: 'pre-wrap', backgroundColor: 'rgba(0, 0, 0, 0.0)' }} />
-              {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {story.story}
-              </ReactMarkdown> */}
+              {/* <MDEditor.Markdown source={story.summary} style={{ whiteSpace: 'pre-wrap', backgroundColor: 'rgba(0, 0, 0, 0.0)' }} /> */}
+              {/* <ReactMarkdown remarkPlugins={[remarkGfm]}> */}
+                {story.summary}
+              {/* </ReactMarkdown> */}
               <div className="flex justify-end mt-4 items-center space-x-3">
                 {/* Word count */}
                 <span>{story.story.split(" ").length} words</span>
                 {/* Zaps */}
                 <span>
-                  <strong>{5000}</strong> ⚡︎
+                  <strong>{143980}</strong> ⚡︎
                 </span>
-                {/* Zaps to buy */}
-                <span>{5000}⚡︎🛍️</span>
+                {/* Zaps to buy
+                <span>{5000}⚡︎🛍️</span> */}
               </div>
             </div>
           </div>

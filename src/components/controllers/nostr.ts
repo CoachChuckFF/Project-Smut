@@ -23,8 +23,6 @@ export interface NostrProfile {
 
 export async function getNostrProfile(nostr: any): Promise<NostrProfile | null> {
 
-    console.log(SMUT_RELAY);
-
     const relays = Object.keys(await nostr.getRelays()) as string[];
     const pubkey = (await nostr.getPublicKey()) as string ;
 
@@ -35,6 +33,9 @@ export async function getNostrProfile(nostr: any): Promise<NostrProfile | null> 
             kinds: [0],
             authors: [pubkey]
         })
+
+        if(!profile) throw new Error('No Profile Found')
+
 
         await pool.close(relays);
 
@@ -49,6 +50,31 @@ export async function getNostrProfile(nostr: any): Promise<NostrProfile | null> 
     }
 }
 
+export async function getNostrProfileFromKey(pubkey: string): Promise<NostrProfile | null> {
+
+    const relay = relayInit(SMUT_RELAY);
+
+    try {
+        await relay.connect();
+        const profile = await relay.get({
+            kinds: [0],
+            authors: [pubkey]
+        })
+        await relay.close();
+
+        if(!profile) throw new Error('No Profile Found')
+
+        return {
+            pubkey,
+            relays: [SMUT_RELAY],
+            ...(JSON.parse((profile as any).content))
+        } as NostrProfile
+    } catch(e) {
+        await relay.close();
+        return null;
+    }
+}
+
 export async function postStory(
     title: string,
     summary: string,
@@ -57,11 +83,26 @@ export async function postStory(
 ) {
 
     const relay = relayInit(SMUT_RELAY);
+    const relays = Object.keys(await nostr.getRelays()) as string[];
     const pubkey = (await nostr.getPublicKey()) as string ;
 
+    const pool = new SimplePool();
     await relay.connect();
 
     try {
+
+        const profile = await pool.get(relays, {
+            kinds: [0],
+            authors: [pubkey]
+        })
+
+        if(!profile) throw new Error('No Profile Found')
+
+        await relay.publish(profile);
+
+        await pool.close(relays);
+
+
         let event = {
             kind: STORY_KIND,
             pubkey,
@@ -85,6 +126,7 @@ export async function postStory(
     } catch (e) {
         console.log(`${e}`)
         await relay.close();
+        await pool.close(relays);
     }
 
 }
@@ -99,7 +141,8 @@ export async function getStories(): Promise<Story[]> {
     try {
         const events = await relay.list([{
             kinds: [30023],
-            ids: SMUT_IDS
+            // ids: SMUT_IDS
+            limit: 10
         }])
 
           console.log("EVENTS");
