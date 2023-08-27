@@ -1,6 +1,7 @@
 "use client";
 
-import { NostrProfile, getNostrProfileFromKey } from "@/components/controllers/nostr";
+import { getInvoiceFromProfile, getNostrProfileFromKey } from "@/components/controllers/nostr";
+import { NostrProfile } from "@/components/models/nostrProfile";
 import {
   DEFAULT_PREFERENCES_DARK,
   ReaderPreferences,
@@ -21,26 +22,21 @@ export default function ReadPageContent(props: ReadPageContentProps) {
   const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(
     DEFAULT_PREFERENCES_DARK
   );
-  const [profile, setProfile] = useState<NostrProfile | null>(null);
-
   const router = useRouter();
 
  // ------------ EFFECTS -----------
- useEffect(() => {
 
-
-    getNostrProfileFromKey(story.authorID).then((profile)=>{
-        console.log(story.authorID)
-        console.log(profile)
-        setProfile(profile)
-    })
-  }, []);
+ useEffect(()=>{
+    if(story.authorProfile){
+        getInvoiceFromProfile(story.authorProfile)
+    }
+ }, [])
 
  // ------------ FUNCTIONS -----------
 
   const onZap = () => {};
   const onBack = () => {
-    router.back();
+    router.replace('/')
   }
 
  // ------------ HTML -----------
@@ -59,7 +55,7 @@ export default function ReadPageContent(props: ReadPageContentProps) {
         <div className="rounded-lg">
           <div className="flex items-start mb-4">
             <img
-              src={profile ? profile.picture : "https://via.placeholder.com/50"}
+              src={story.authorProfile ? story.authorProfile.picture : "https://via.placeholder.com/50"}
               alt="Author Icon"
               width={50}
               height={50}
@@ -69,7 +65,8 @@ export default function ReadPageContent(props: ReadPageContentProps) {
               <h2 className="font-bold cursor-pointer hover:underline">
                 {story.title}
               </h2>
-              <p>By: {profile?.name ?? story.authorID}</p>
+              <p>By: {story.authorProfile?.name ?? story.authorID}</p>
+              <p>Pay: {story.authorProfile?.lud16 ?? 'XXX'}</p>
               <ul className="flex space-x-2 mt-1">
                 {story.tags.map((tag, tagIdx) => (
                   <li

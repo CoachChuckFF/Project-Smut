@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NostrProfile, getNostrProfile, getStories } from "../components/controllers/nostr";
+import { getNostrProfile, getStories, listStories } from "../components/controllers/nostr";
 import { DEFAULT_PREFERENCES_DARK, ReaderPreferences } from "@/components/models/reader";
 import { Story, TEST_STORIES } from "@/components/models/story";
 import { useRouter } from "next/navigation";
 import MDEditor from "@uiw/react-md-editor";
+import { NostrProfile } from "@/components/models/nostrProfile";
 
 export default function Home() {
 
@@ -26,6 +27,7 @@ export default function Home() {
     }
 
     getStories().then(setStories)
+    
   }, []);
 
   useEffect(() => {
@@ -37,6 +39,12 @@ export default function Home() {
         });
     }
   }, [nostr]);
+
+  useEffect(() => {
+    if(stories){
+      listStories();
+    }
+  }, [stories]);
 
   // ----------- FUNCTIONS ------------------
 
@@ -87,7 +95,7 @@ export default function Home() {
                 onClick={() => {
                   onAuthor(story.authorID);
                 }}
-                src="https://via.placeholder.com/50"
+                src={story.authorProfile ? story.authorProfile.picture : "https://via.placeholder.com/50"}
                 alt="Author Icon"
                 width={50}
                 height={50}
@@ -102,7 +110,7 @@ export default function Home() {
                 >
                   {story.title}
                 </h2>
-                <p>By: {story.authorID}</p>
+                <p>By: {story.authorProfile ? story.authorProfile.name : story.authorID}</p>
                 <ul className="flex space-x-2 mt-1">
                   {story.tags.map((tag, tagIdx) => (
                     <li

@@ -1,4 +1,7 @@
+import { NostrProfile } from "./nostrProfile";
+
 export interface Story {
+    authorProfile?: NostrProfile
     authorID: string;
     storyID: string;
     title: string;

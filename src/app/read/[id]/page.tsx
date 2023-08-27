@@ -20,6 +20,7 @@ export async function generateMetadata(props: Props): Promise<Metadata>{
         return {
             title: story.title,
             description: story.summary,
+            authors: {name: story.authorProfile?.name ?? story.authorID}
         }
     } catch(e){
         return {

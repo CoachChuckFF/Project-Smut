@@ -11,16 +11,13 @@ export default function WritePage() {
 
     const handleSubmit = async () => {
         console.log("Submitted title:", title);
-        console.log("Submitted summary:", summary);
         console.log("Submitted content:", markdownContent);
 
         // Your logic to post the story
-        await postStory( title, summary, markdownContent, (window as any).nostr);
-        await getStories();
+        await postStory( title, markdownContent, (window as any).nostr);
 
         // Maybe reset the fields
         setTitle("");
-        setSummary("");
         setMarkdownContent("");
     }
 
@@ -34,15 +31,6 @@ export default function WritePage() {
                 placeholder="Title"
                 className="mb-2 p-2 w-full  bg-stone-800"
             />
-
-            {/* Summary Input */}
-            <textarea
-                value={summary}
-                onChange={e => setSummary(e.target.value)}
-                placeholder="Summary"
-                className="mb-2 p-2 w-full  bg-stone-800"
-                rows={3}
-            ></textarea>
 
             <MDEditor
                 value={markdownContent}
