@@ -225,6 +225,8 @@ export async function getInvoiceFromProfile(profile: NostrProfile): Promise<any>
 
             console.log(data)
 
+            
+
             return await getInvoiceFromLud06(data, 5000)
 
         } catch (error) {
@@ -258,6 +260,33 @@ interface LnServiceResponse {
     metadata: string; // Metadata json presented as a raw string
     tag: "payRequest"; // Type of LNURL
 }
+
+// export const function getInvoiceFromZap(response: LnServiceResponse, chosenAmount: number): Promise<string> {
+
+//     response.
+// const senderPubkey = // The sender's pubkey
+// const recipientPubkey = // The recipient's pubkey
+// const callback = // The callback received from the recipients lnurl pay endpoint
+// const lnurl = // The recipient's lightning address, encoded as a lnurl
+// const sats = 21
+
+// const amount = sats * 1000
+// const relays = ['wss://nostr-pub.wellorder.net']
+// const event = encodeURI(JSON.stringify(await signEvent({
+//   kind: 9734,
+//   content: "",
+//   pubkey: senderPubkey,
+//   created_at: Math.round(Date.now() / 1000),
+//   tags: [
+//     ["relays", ...relays],
+//     ["amount", amount.toString()],
+//     ["lnurl", lnurl],
+//     ["p", recipientPubkey],
+//   ],
+// })))
+
+// const {pr: invoice} = await fetchJson(`${callback}?amount=${amount}&nostr=${event}&lnurl=${lnurl}`)
+// }
 
 export async function getInvoiceFromLud06(response: LnServiceResponse, chosenAmount: number): Promise<string> {
 
